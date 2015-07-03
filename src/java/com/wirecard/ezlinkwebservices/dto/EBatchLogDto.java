@@ -2,7 +2,7 @@ package com.wirecard.ezlinkwebservices.dto;
 
 import java.util.Date;
 import org.springframework.stereotype.Component;
-
+//test
 @Component
 public class EBatchLogDto {
     private String sno;
