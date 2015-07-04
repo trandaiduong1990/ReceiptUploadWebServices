@@ -1,2 +1,0 @@
-org.transinfo.messaging.communication.posdailer.ObjectPool
-org.transinfo.messaging.communication.posdailer.CleanUpThread
