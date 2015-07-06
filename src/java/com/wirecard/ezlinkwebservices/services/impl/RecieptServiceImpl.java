@@ -65,6 +65,7 @@ public class RecieptServiceImpl implements RecieptService {
         int no_success = 0;
         int no_failure = 0;
         int update;
+        
         try {
             SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
             tranxLogDtoList = objETranxLogDtoMapper.getTranxSuccess();
@@ -72,15 +73,17 @@ public class RecieptServiceImpl implements RecieptService {
             if (!tranxLogDtoList.isEmpty() && tranxLogDtoList != null) {
                 terminalDataDtoList = objETerminalDataDtoMapper.noReceiptDecryption("N",tranxLogDtoList);
                 if (null != terminalDataDtoList && !terminalDataDtoList.isEmpty()) {
+                    SerialManager objSerialManager = new SerialManager();
 
                     String decryptedRecieptData = null;
+                    
                     for (int i = 0; i < terminalDataDtoList.size(); i++) {
                         objETerminalDataDto = terminalDataDtoList.get(i);
                         objETerminalDataDto.setUpdatedDate(updatedDate);
 
                         try {
                             Thread.sleep(5000);
-                            SerialManager objSerialManager = new SerialManager();
+                            
                             synchronized (this) {
                                 decryptedRecieptData = objSerialManager.getDecryptedRecieptData(objETerminalDataDto);
                             }
@@ -99,7 +102,7 @@ public class RecieptServiceImpl implements RecieptService {
                         } catch (Exception e) {
                             objETerminalDataDto.setDecryptReceiptStatus("E");
                             update = objETerminalDataDtoMapper.updateETerminalDataBySNo(objETerminalDataDto);
-                            if(update == 0) {
+                            if(update == 1) {
                                 ezlink.info("-------------------Update TERMINAL_DATA unsuccessful------------------");
                                 ezlink.info("-------------------Terminal ID: " + objETerminalDataDto.getSno() +"------------------");
                             }
@@ -108,10 +111,15 @@ public class RecieptServiceImpl implements RecieptService {
                         // Close port if needed
                         no_failure = terminalDataDtoList.size() - no_success;
                     }
+                    objSerialManager.shutdown();
                 }
             }
+            
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        finally {
+            
         }
         
         // Insert Batch_log
@@ -121,6 +129,7 @@ public class RecieptServiceImpl implements RecieptService {
         
         try {
             objBatchLogDtoMapper.insert(objBatchLogDto);
+            ezlink.info("-------------------Insert new Batch_Log ------------------");
         } catch (SQLException ex) {
             Logger.getLogger(RecieptServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }

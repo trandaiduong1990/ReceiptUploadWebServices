@@ -403,12 +403,12 @@ public class SerialConnection implements SerialPortEventListener,
 			System.out.println("&&&&&&&&&& In Finally... &&&&&&&");
                          ezlink.info("&&&&&&&&&& In Finally... &&&&&&&  ");
 			dataHandler.strISODump.setLength(0);
-			if(sPort!=null)
-			{
-				sPort.close();
-				System.out.println("Port Closed");
-                                ezlink.info("&&&&&&&&&& Port Closed... &&&&&&&  ");
-			}
+//			if(sPort!=null)
+//			{
+//				sPort.close();
+//				System.out.println("Port Closed");
+//                                ezlink.info("&&&&&&&&&& Port Closed... &&&&&&&  ");
+//			}
 	 	}
 
 	 	System.out.println("inside read() : ReadData="+new String(responseData));
@@ -417,6 +417,7 @@ public class SerialConnection implements SerialPortEventListener,
         return responseData;
     }
 
+        
 
 
 }

@@ -344,6 +344,6 @@
             #{item.tranxlogid,jdbcType=VARCHAR}
         </foreach>
         and DECRYPTED_RECIEPT_DATA is null
-        and DECRYPT_RECEIPT_STATUS like '%#{decryptReceiptStatus,jdbcType=VARCHAR}%'
+        and DECRYPT_RECEIPT_STATUS = #{decryptReceiptStatus,jdbcType=VARCHAR}
     </select>
 </mapper>

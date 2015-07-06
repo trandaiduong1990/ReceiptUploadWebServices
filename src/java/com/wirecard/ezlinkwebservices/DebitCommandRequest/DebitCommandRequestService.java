@@ -43,12 +43,13 @@ public class DebitCommandRequestService {
 
         objEZLINGWSRESBODY.setDebitCommandRes(objDebitCommandRes);
         
-        if(objDebitCommandRes.getDEBITCOMMAND().equals("") || objDebitCommandRes.getDEBITCOMMAND() == null) {
-            objDebitCommandResError.setDCERRORCODE(StringConstants.ResponseCode.TIME_OUT);
-            objDebitCommandResError.setDCERRORDESC(StringConstants.Common.TIME_OUT);
-        } else {
+        ezlink.info("-------------------getDEBITCOMMAND---------------: " + objDebitCommandRes.getDEBITCOMMAND());
+        if(null != objDebitCommandRes.getDEBITCOMMAND()) {
             objDebitCommandResError.setDCERRORCODE(StringConstants.ResponseCode.SUCCESS);
             objDebitCommandResError.setDCERRORDESC(StringConstants.ResponseCode.SUCCESS);
+        } else {
+            objDebitCommandResError.setDCERRORCODE(StringConstants.ResponseCode.TIME_OUT);
+            objDebitCommandResError.setDCERRORDESC(StringConstants.Common.TIME_OUT);
         }
         objEZLINGWSRESBODY.setDebitCommandResError(objDebitCommandResError);
         

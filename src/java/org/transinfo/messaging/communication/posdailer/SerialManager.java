@@ -241,9 +241,9 @@ public class SerialManager {
      * Cleanly shuts down the applicaion. first closes any open ports and cleans
      * up, then exits.
      */
-    private void shutdown() {
+    public void shutdown() {
         connection.closeConnection();
-        System.exit(1);
+        //System.exit(1);
     }
 
     /**

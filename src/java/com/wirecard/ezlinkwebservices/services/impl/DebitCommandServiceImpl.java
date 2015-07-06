@@ -288,6 +288,47 @@ public class DebitCommandServiceImpl implements DebitCommandService {
             
             }
         }
+        
+        //--------------------------------------------------------------------------------------------------
+        //Checking get debit command time from when generating qrcode
+        try {
+            Date generateQrcode = objETranxLogDto.getDatetime();
+            Date timeout = new Date(generateQrcode.getTime() + 2*60*1000);
+            if (updatedDate.after(timeout)) {
+                objETranxLogDto.setDatetime(updatedDate);
+                objETranxLogDto.setResponseCode(StringConstants.ResponseCode.TIME_OUT);
+                result = objETranxLogDtoMapper.updateResponseCode(objETranxLogDto);
+                System.out.println(" tranxlog Updation Result : " + result);
+                if (result != 1) {
+                    DebitCommandFault objDebitCommandFault = new DebitCommandFault();
+                    objDebitCommandFault.setMessage(StringConstants.Common.INSERTION_FAILED_MESSAGE);
+                    objDebitCommandFault.setFaultInfo(StringConstants.Common.INSERTION_FAILED_MESSAGE_INFO);
+
+                    ezlink.info("\n------DC------EXCEPTION-----------------------");
+                    ezlink.info("Response sent from getDebitCommand : " + new Date());
+                    ezlink.info("Status : " + objDebitCommandFault.getMessage());
+                    ezlink.info("Remarks : " + objDebitCommandFault.getFaultInfo());
+                    ezlink.info("\n---------DC-------EXCEPTION-------------------");
+
+                    throw new DebitCommandFault_Exception(objDebitCommandFault.getMessage(), objDebitCommandFault);
+                }
+                
+                objDebitCommandRes.setORDERNO(objETerminalDataDto.getOrderNo());
+                objDebitCommandRes.setMERCHANTREFNO(objETerminalDataDto.getMerchantTranxRefNo());
+                objDebitCommandRes.setCAN(objETerminalDataDto.getCan());
+                return objDebitCommandRes;
+            }
+        }
+        
+        catch (DebitCommandFault_Exception e) {
+            throw e;
+        }
+        
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        
         try {
             //Repeated host Count
             objAvailableETerminalDataDto = objETerminalDataDtoMapper.isRepeatedMerchantTranxRefNo(merchantNo, merchantTranxRefNo, orderNo);
@@ -530,40 +571,6 @@ public class DebitCommandServiceImpl implements DebitCommandService {
                 throw new DebitCommandFault_Exception(objDebitCommandFault.getMessage(), objDebitCommandFault);
             }
         
-        //--------------------------------------------------------------------------------------------------
-        //Checking get debit command time from when generating qrcode
-        try {
-            Date generateQrcode = objETranxLogDto.getDatetime();
-            Date timeout = new Date(generateQrcode.getTime() + 2*60*1000);
-            if (updatedDate.after(timeout)) {
-                objETranxLogDto.setDatetime(updatedDate);
-                objETranxLogDto.setResponseCode(StringConstants.ResponseCode.TIME_OUT);
-                result = objETranxLogDtoMapper.updateResponseCode(objETranxLogDto);
-                System.out.println(" tranxlog Updation Result : " + result);
-                if (result != 1) {
-                    DebitCommandFault objDebitCommandFault = new DebitCommandFault();
-                    objDebitCommandFault.setMessage(StringConstants.Common.INSERTION_FAILED_MESSAGE);
-                    objDebitCommandFault.setFaultInfo(StringConstants.Common.INSERTION_FAILED_MESSAGE_INFO);
-
-                    ezlink.info("\n------DC------EXCEPTION-----------------------");
-                    ezlink.info("Response sent from getDebitCommand : " + new Date());
-                    ezlink.info("Status : " + objDebitCommandFault.getMessage());
-                    ezlink.info("Remarks : " + objDebitCommandFault.getFaultInfo());
-                    ezlink.info("\n---------DC-------EXCEPTION-------------------");
-
-                    throw new DebitCommandFault_Exception(objDebitCommandFault.getMessage(), objDebitCommandFault);
-                }
-                return objDebitCommandRes;
-            }
-        }
-        
-        catch (DebitCommandFault_Exception e) {
-            throw e;
-        }
-        
-        catch (Exception e) {
-            e.printStackTrace();
-        }
         //---------------------------------------------------------------------------------------------------
         //Updating success response code
         try {
