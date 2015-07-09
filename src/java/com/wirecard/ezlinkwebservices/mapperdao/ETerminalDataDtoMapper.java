@@ -31,5 +31,5 @@ public interface ETerminalDataDtoMapper {
     
         List<ETerminalDataDto> getTranxLogIdByCan(@Param("can") String merchantNo) throws SQLException;
 
-    List<ETerminalDataDto> noReceiptDecryption(@Param("decryptReceiptStatus") String decryptReceiptStatus, @Param("objTranxLogDtoList") List<ETranxLogDto> objTranxLogDtoList) throws SQLException;
+    List<ETerminalDataDto> noReceiptDecryption(@Param("objTranxLogDtoList") List<ETranxLogDto> objTranxLogDtoList) throws SQLException;
 }

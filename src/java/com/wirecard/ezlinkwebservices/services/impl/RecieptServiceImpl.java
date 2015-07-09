@@ -24,6 +24,8 @@ import com.wirecard.ezlinkwebservices.util.TerminalUtil;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +52,7 @@ public class RecieptServiceImpl implements RecieptService {
     EBatchLogDto objBatchLogDto;
     @Autowired
     EBatchLogDtoMapper objBatchLogDtoMapper;
+    int update;
     
     private static final org.apache.log4j.Logger ezlink = org.apache.log4j.Logger.getLogger(RecieptServiceImpl.class);
 
@@ -64,17 +67,15 @@ public class RecieptServiceImpl implements RecieptService {
         List<ETerminalDataDto> terminalDataDtoList;
         int no_success = 0;
         int no_failure = 0;
-        int update;
+        
         
         try {
             SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
             tranxLogDtoList = objETranxLogDtoMapper.getTranxSuccess();
 
-            if (!tranxLogDtoList.isEmpty() && tranxLogDtoList != null) {
-                terminalDataDtoList = objETerminalDataDtoMapper.noReceiptDecryption("N",tranxLogDtoList);
+            if (null!=tranxLogDtoList && !tranxLogDtoList.isEmpty()) {
+                terminalDataDtoList = objETerminalDataDtoMapper.noReceiptDecryption(tranxLogDtoList);
                 if (null != terminalDataDtoList && !terminalDataDtoList.isEmpty()) {
-                    SerialManager objSerialManager = new SerialManager();
-
                     String decryptedRecieptData = null;
                     
                     for (int i = 0; i < terminalDataDtoList.size(); i++) {
@@ -82,6 +83,7 @@ public class RecieptServiceImpl implements RecieptService {
                         objETerminalDataDto.setUpdatedDate(updatedDate);
 
                         try {
+                            SerialManager objSerialManager = new SerialManager();
                             Thread.sleep(5000);
                             
                             synchronized (this) {
@@ -111,23 +113,20 @@ public class RecieptServiceImpl implements RecieptService {
                         // Close port if needed
                         no_failure = terminalDataDtoList.size() - no_success;
                     }
-                    objSerialManager.shutdown();
+//                    objSerialManager.shutdown();
                 }
             }
             
         } catch (Exception e) {
             e.printStackTrace();
         }
-        finally {
-            
-        }
-        
-        // Insert Batch_log
-        objBatchLogDto.setNoSuccess(no_success);
-        objBatchLogDto.setNoFailure(no_failure);
-        objBatchLogDto.setUpdateDate(updatedDate);
         
         try {
+            // Insert Batch_log
+            objBatchLogDto.setNoSuccess(no_success);
+            objBatchLogDto.setNoFailure(no_failure);
+            objBatchLogDto.setUpdateDate(updatedDate);
+        
             objBatchLogDtoMapper.insert(objBatchLogDto);
             ezlink.info("-------------------Insert new Batch_Log ------------------");
         } catch (SQLException ex) {
@@ -135,5 +134,4 @@ public class RecieptServiceImpl implements RecieptService {
         }
         return objRecieptRes;
     }
-
 }

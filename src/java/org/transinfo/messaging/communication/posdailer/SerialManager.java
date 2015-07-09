@@ -299,31 +299,14 @@ public class SerialManager {
             //serialDemo.connection.sendMessage(ISOUtil.hex2byte("020079600037000002007024058000C10004164999770007848180000000000000011111011000100309020037003237303031393630313638313638313035323934202020000334343400063031313030320388"));
           
 //Debit command
-            byte[] decRecieptData = connection.sendMessage(ISOUtil.hex2byte(HeaderUtil.getReqRecieptData(objETerminalDataDto.getRecieptData(), objETerminalDataDto.getTerminalSessionKey(),objETerminalDataDto.getDebitSessionKey(), objETerminalDataDto.getCan(),objETerminalDataDto.getEzLinkString(), "")));
+            byte[] decRecieptData = null;
+            try {
+            decRecieptData = connection.sendMessage(ISOUtil.hex2byte(HeaderUtil.getReqRecieptData(objETerminalDataDto.getRecieptData(), objETerminalDataDto.getTerminalSessionKey(),objETerminalDataDto.getDebitSessionKey(), objETerminalDataDto.getCan(),objETerminalDataDto.getEzLinkString(), "")));
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
             System.out.println("Decrypted Reciept Data=" + ISOUtil.hexString(decRecieptData));
             ezlink.info("Decrypted Reciept Data= : " + ISOUtil.hexString(decRecieptData));
-
-         /*
-            byte[] recieptData = connection.sendMessage(ISOUtil.hex2byte(HeaderUtil.getReqRecieptData("EEF6BAADFDDB93685EC111ACD05D7133E9472DA4416D0C079000")));
-            System.out.println("Reciept Data =" + ISOUtil.hexString(recieptData));
-            ezlink.info("Reciept Data= : " + ISOUtil.hexString(recieptData));
-            */
-            //debitCommand = ISOUtil.hex2byte("36303030303030303030313132303030301C343100165F332D39907B07D4C9C72441CF93C3461C3432000854495430303031201C3433001647058A8594B61B0707BD7794B3F7078D1C34340016134DBF682CD22C68A60D1F0E71F929D01C34350012DC7934737E93BE4FDC7934731C30303030303031313230303030");
-                                /*
-             String[] strResSplit = ISOUtil.hexString(debitCommand).split("1C");
-
-             for(int i=0;i<strResSplit.length;i++)
-             {
-             strResSplit[i] = strResSplit[i].substring(8);
-             System.out.println(strResSplit[i]);
-             ezlink.info("strResSplit [ "+i+" ]" + strResSplit[i]);
-             }
-             strDebitCmd = "250315021403"+stTerRndNo+strResSplit[1]+strResSplit[2];
-             System.out.println("strDebitCmd= "+strDebitCmd +"  Len  "+strDebitCmd.length());
-             ezlink.info("strDebitCmd= "+strDebitCmd+" Len : " + strDebitCmd.length());
-             
-             */
-            //String strResponse = ISOUtil.hexString(recieptData);
            String strResponse = ISOUtil.hexString(decRecieptData);
             ezlink.info("+++Decrypted Reciept Data strResponse Length : " + strResponse.length());
             ezlink.info("+++Decrypted Reciept Data strResponse  : " + strResponse);

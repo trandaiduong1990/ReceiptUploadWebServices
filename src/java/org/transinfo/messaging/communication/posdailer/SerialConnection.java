@@ -341,6 +341,7 @@ public class SerialConnection implements SerialPortEventListener,
 		byte[] response = null;
 		try
 		{
+                        ezlink.info("--------os--------:" + os.toString());
 			System.out.println("Writing data="+ISOUtil.hexString(strReq,0,strReq.length)+" Length : "+strReq.length);
                         ezlink.info("sendMessage() : Writing data= : "+ISOUtil.hexString(strReq,0,strReq.length)  );
 			os.write(strReq);
@@ -403,12 +404,12 @@ public class SerialConnection implements SerialPortEventListener,
 			System.out.println("&&&&&&&&&& In Finally... &&&&&&&");
                          ezlink.info("&&&&&&&&&& In Finally... &&&&&&&  ");
 			dataHandler.strISODump.setLength(0);
-//			if(sPort!=null)
-//			{
-//				sPort.close();
-//				System.out.println("Port Closed");
-//                                ezlink.info("&&&&&&&&&& Port Closed... &&&&&&&  ");
-//			}
+			if(sPort!=null)
+			{
+				sPort.close();
+				System.out.println("Port Closed");
+                                ezlink.info("&&&&&&&&&& Port Closed... &&&&&&&  ");
+			}
 	 	}
 
 	 	System.out.println("inside read() : ReadData="+new String(responseData));

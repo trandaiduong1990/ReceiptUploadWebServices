@@ -136,6 +136,7 @@ System.out.println(split.length+" \n  "+split[0]+"\n  "+split[1].substring(8)+"\
 public static String getReqRecieptData(String stEncRecData,String stRecSesskey,String strDebitSessionKey,String stPan,String stEzlinkString,String stMacKey )
 {
 	String strConstructMsg="";
+        try {
         String stRefNo="DC7934737E93BE4FDC793473";
         stMacKey="11111111111111111111111111111111";
         
@@ -157,7 +158,9 @@ public static String getReqRecieptData(String stEncRecData,String stRecSesskey,S
 
 	//strConstructMsg= "02037436303030303030303030313132303030301C33310008DC7934737E93BE4F1C33320008DC7934737E93BE4F1C33330003FFFFFE1C333401130203000A820013881000130007177762B20D5307D50E3F3B24D01C4001FD1EFF75004E202556FBDA1E2088881C00A0FFFFFF2570016643544E3536323120550001000400005555000000000000000000000000000000000000000000000000AB273C2F13AFC9FB03F79059E20C3EC73BF71C33350012DC7934737E93BE4FDC7934731C037A";
 	System.out.println("getReqRecieptData ; Data="+strConstructMsg);
-
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 return strConstructMsg;
 }
