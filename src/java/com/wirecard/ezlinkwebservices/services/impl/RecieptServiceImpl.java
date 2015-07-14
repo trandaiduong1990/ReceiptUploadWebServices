@@ -76,6 +76,7 @@ public class RecieptServiceImpl implements RecieptService {
             if (null!=tranxLogDtoList && !tranxLogDtoList.isEmpty()) {
                 terminalDataDtoList = objETerminalDataDtoMapper.noReceiptDecryption(tranxLogDtoList);
                 if (null != terminalDataDtoList && !terminalDataDtoList.isEmpty()) {
+                ezlink.info("------------Terminal Data List--------------: " + terminalDataDtoList.size());
                     String decryptedRecieptData = null;
                     
                     for (int i = 0; i < terminalDataDtoList.size(); i++) {
@@ -114,23 +115,26 @@ public class RecieptServiceImpl implements RecieptService {
                         no_failure = terminalDataDtoList.size() - no_success;
                     }
 //                    objSerialManager.shutdown();
+                } else {
+                    ezlink.info("------------Terminal Data List NULL--------------: " );
                 }
             }
             
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
-        try {
-            // Insert Batch_log
-            objBatchLogDto.setNoSuccess(no_success);
-            objBatchLogDto.setNoFailure(no_failure);
-            objBatchLogDto.setUpdateDate(updatedDate);
-        
-            objBatchLogDtoMapper.insert(objBatchLogDto);
-            ezlink.info("-------------------Insert new Batch_Log ------------------");
-        } catch (SQLException ex) {
-            Logger.getLogger(RecieptServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        finally {
+            try {
+                // Insert Batch_log
+                objBatchLogDto.setNoSuccess(no_success);
+                objBatchLogDto.setNoFailure(no_failure);
+                objBatchLogDto.setUpdateDate(updatedDate);
+
+                objBatchLogDtoMapper.insert(objBatchLogDto);
+                ezlink.info("-------------------Insert new Batch_Log ------------------");
+            } catch (SQLException ex) {
+                Logger.getLogger(RecieptServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return objRecieptRes;
     }
